@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "531608117473",
+    "firebase_url": "https://ungdungbanvephim.firebaseio.com",
+    "project_id": "ungdungbanvephim",
+    "storage_bucket": "ungdungbanvephim.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531608117473:android:23c955317d4e692b6597a0",
+        "android_client_info": {
+          "package_name": "com.example.myproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531608117473-56hcqhgs72u5mpilsva897gftis1ab7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBsyYymzDHdxhCuaG8dS-J3QhZVq9cNNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531608117473-56hcqhgs72u5mpilsva897gftis1ab7l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
