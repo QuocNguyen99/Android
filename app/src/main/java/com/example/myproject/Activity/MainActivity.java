@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myproject.Class.Chair;
 import com.example.myproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,22 +27,31 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     Button btnDangNhap;
     Button btnGG;
-    EditText edtUser,edtPass;
-    TextView txtDangKy;
+    EditText edtUser, edtPass;
+    TextView txtDangKy,txtForget;
     CheckBox cbLuu;
 
     FirebaseAuth mAuth;
     SharedPreferences sharedPreferences;
     DatabaseReference mData;
     GoogleSignInClient mGoogleSignInClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +60,16 @@ public class MainActivity extends AppCompatActivity {
 
         Anhxa();
 
-        sharedPreferences=getSharedPreferences("dataLogin",MODE_PRIVATE);
-        edtUser.setText(sharedPreferences.getString("taikhoan",""));
-        edtPass.setText(sharedPreferences.getString("matkhau",""));
-        cbLuu.setChecked(sharedPreferences.getBoolean("checked",false));
+        sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
+        edtUser.setText(sharedPreferences.getString("taikhoan", ""));
+        edtPass.setText(sharedPreferences.getString("matkhau", ""));
+        cbLuu.setChecked(sharedPreferences.getBoolean("checked", false));
 
         mAuth = FirebaseAuth.getInstance();
         txtDangKy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(MainActivity.this,LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -68,7 +78,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DangNhap();
+            }
+        });
 
+        txtForget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ForgetActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -78,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient= GoogleSignIn.getClient(this,gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         btnGG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,25 +105,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void DangNhap(){
-        final String email=edtUser.getText().toString();
-        final String password=edtPass.getText().toString();
+    private void DangNhap() {
+        final String email = edtUser.getText().toString();
+        final String password = edtPass.getText().toString();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent=new Intent(MainActivity.this,InforActivity.class);
+                            Intent intent = new Intent(MainActivity.this, InforActivity.class);
                             startActivity(intent);
                             finish();
                             //luu neu check
-                            SharedPreferences.Editor editor=sharedPreferences.edit();
-                            if(cbLuu.isChecked()){
-                                editor.putString("taikhoan",email);
-                                editor.putString("matkhau",password);
-                                editor.putBoolean("checked",true);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            if (cbLuu.isChecked()) {
+                                editor.putString("taikhoan", email);
+                                editor.putString("matkhau", password);
+                                editor.putBoolean("checked", true);
                                 editor.commit()
-;                            }else{
+                                ;
+                            } else {
                                 //xoa neu k check
                                 editor.remove("taikhoan");
                                 editor.remove("matkhau");
@@ -158,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            Intent intent=new Intent(getApplicationContext(),InforActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), InforActivity.class);
                             startActivity(intent);
 
 
@@ -173,39 +191,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void Anhxa() {
-        btnDangNhap     =(Button) findViewById(R.id.buttonConfirm);
-        btnGG           =(Button) findViewById(R.id.btnLoginGG);
-        edtPass         =(EditText) findViewById(R.id.editTextPass);
-        edtUser         =(EditText) findViewById(R.id.editTextUser);
-        txtDangKy       =(TextView) findViewById(R.id.textViewRegist);
-        cbLuu           =(CheckBox) findViewById(R.id.checkBoxRemember);
+        btnDangNhap = (Button) findViewById(R.id.buttonConfirm);
+        btnGG       = (Button) findViewById(R.id.btnLoginGG);
+        edtPass     = (EditText) findViewById(R.id.editTextPass);
+        edtUser     = (EditText) findViewById(R.id.editTextUser);
+        txtDangKy   = (TextView) findViewById(R.id.textViewRegist);
+        txtForget   =(TextView) findViewById(R.id.textViewforgot);
+        cbLuu = (CheckBox) findViewById(R.id.checkBoxRemember);
 
+        mData = FirebaseDatabase.getInstance().getReference();
 
-
-        mData= FirebaseDatabase.getInstance().getReference();
-//
-//        Map<String,Integer> map=new HashMap<String, Integer>();
-//        map.put("idPhim",3);
-//        mData.child("Ngay1").push().setValue(map);
-//        Flim flim123=new Flim(3,"Kẻ hủy diệt",
-//                "https://firebasestorage.googleapis.com/v0/b/ungdungbanvephim.appspot.com/o/kehuydiet.jpg?alt=media&token=208f44d6-dccd-464c-a995-412b20dc577e",
-//                "Kẻ hủy diệt là một bộ phim điện ảnh ra mắt khán giả vào năm 1984 thuộc thể loại hành động/khoa học viễn tưởng của đạo diễn James Cameron, đồng tác giả là Cameron và William Wisher Jr với các diễn viên Arnold Schwarzenegger, Linda Hamilton và Michael Biehn. Bộ phim được sản xuất bởi Hemdale Film Corporation và được phân phối bởi Orion Pictures, và quay tại Los Angeles.",
-//                "Hành động","144p");
-//        List<Chair>chairs=new ArrayList<>();
-//        Chair chair=new Chair("A1","Trống");
-//        chairs.add(chair);
-//        Chair chair1=new Chair("A2","Trống");
-//        chairs.add(chair1);
-//        Chair chair2=new Chair("B1","Trống");
-//        chairs.add(chair2);
-//        Chair chair3=new Chair("B2","Trống");
-//        chairs.add(chair3);
-//        Chair chair4=new Chair("C1","Trống");
-//        chairs.add(chair4);
-//        Chair chair5=new Chair("C2","Trống");
-//        chairs.add(chair5);
-//        Room room=new Room(3,chairs);
-//        DayMovie dayMovie=new DayMovie(3,3);
-//        mData.child("Ngay1").push().setValue(dayMovie);
     }
 }
+

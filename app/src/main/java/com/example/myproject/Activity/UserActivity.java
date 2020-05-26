@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class UserActivity extends AppCompatActivity {
 
     private Toolbar tb;
-    private TextView txtUserName,txtHistory;
+    private TextView txtUserName, txtHistory, txtchangpass;
     Button btnLogout;
 
     DatabaseReference mData;
@@ -32,12 +32,20 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
         Anhxa();
-        mData= FirebaseDatabase.getInstance().getReference();
+        mData = FirebaseDatabase.getInstance().getReference();
         ReadSession();
         txtHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(UserActivity.this,HistoryActivity.class);
+                Intent intent = new Intent(UserActivity.this, HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        txtchangpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserActivity.this, ChangepassActivity.class);
                 startActivity(intent);
             }
         });
@@ -51,46 +59,47 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
-    public void SignOut(){
+    public void SignOut() {
         FirebaseAuth.getInstance().signOut();
-        Intent intent=new Intent(UserActivity.this,MainActivity.class);
+        Intent intent = new Intent(UserActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
 
-
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
-            default: break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void ReadSession(){
-        SharedPreferences sharedPreferences=getSharedPreferences("dataLogin", MODE_PRIVATE);
-        String name=sharedPreferences.getString("taikhoan","Tên tài khoản");
+    private void ReadSession() {
+        SharedPreferences sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
+        String name = sharedPreferences.getString("taikhoan", "Tên tài khoản");
 
         txtUserName.setText(name);
     }
 
-    private void Toolbar(){
-        tb=(Toolbar) findViewById(R.id.toolbar3);
+    private void Toolbar() {
+        tb = (Toolbar) findViewById(R.id.toolbar3);
         setSupportActionBar(tb);
-        ActionBar actionBar=getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
-        Drawable iconBack=getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp);
+        Drawable iconBack = getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(iconBack);
     }
 
     private void Anhxa() {
         Toolbar();
-        txtUserName =(TextView) findViewById(R.id.textViewName);
-        txtHistory  =(TextView) findViewById(R.id.textViewHistory);
-        btnLogout   =(Button) findViewById(R.id.buttonLogout);
+        txtUserName = (TextView) findViewById(R.id.textViewName);
+        txtHistory = (TextView) findViewById(R.id.textViewHistory);
+        txtchangpass = (TextView) findViewById(R.id.textViewChangePass);
+        btnLogout = (Button) findViewById(R.id.buttonLogout);
     }
 
 

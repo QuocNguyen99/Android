@@ -29,8 +29,8 @@ public class HistoryActivity extends AppCompatActivity {
     Toolbar tb;
 
     DatabaseReference mData;
-    Booking bk=new Booking();
-    ArrayList<Booking> bookings=new ArrayList<>();
+    Booking bk = new Booking();
+    ArrayList<Booking> bookings = new ArrayList<>();
     RecyclerView rcHistory;
     HistoryAdapter adapter;
 
@@ -40,37 +40,38 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
 
-        mData= FirebaseDatabase.getInstance().getReference();
+        mData = FirebaseDatabase.getInstance().getReference();
         Anhxa();
     }
 
-    private String TimIndex(String a){
-        char[] ch= a.toCharArray();
-        String tenmail="";
-        for(int i=0;i<ch.length;i++){
-            String c= String.valueOf(ch[i]);
-            if(c.equals("@")){
-                tenmail=a.substring(0,i);
+    private String TimIndex(String a) {
+        char[] ch = a.toCharArray();
+        String tenmail = "";
+        for (int i = 0; i < ch.length; i++) {
+            String c = String.valueOf(ch[i]);
+            if (c.equals("@")) {
+                tenmail = a.substring(0, i);
                 return tenmail;
             }
         }
         return null;
     }
 
-    private void getDataBase(){
-        SharedPreferences sharedPreferences=getSharedPreferences("dataLogin",MODE_PRIVATE);
-        String ten=sharedPreferences.getString("taikhoan","");
-        String tensaukhicat=TimIndex(ten);
+    private void getDataBase() {
+        SharedPreferences sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
+        String ten = sharedPreferences.getString("taikhoan", "");
+        String tensaukhicat = TimIndex(ten);
 
         mData.child("Booking").child(tensaukhicat).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data:dataSnapshot.getChildren()){
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
                     bk = data.getValue(Booking.class);
-                    bookings.add(new Booking(bk.getTenPhim(),bk.getNgayDat(),bk.getTenGhe()));
+                    bookings.add(new Booking(bk.getTenPhim(), bk.getNgayDat(), bk.getTenGhe()));
                     adapter.notifyDataSetChanged();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -81,34 +82,35 @@ public class HistoryActivity extends AppCompatActivity {
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
-            default: break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void Toolbar(){
-        tb=(Toolbar) findViewById(R.id.toolbar4);
+    private void Toolbar() {
+        tb = (Toolbar) findViewById(R.id.toolbar4);
         setSupportActionBar(tb);
-        ActionBar actionBar=getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
-        Drawable iconBack=getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp);
+        Drawable iconBack = getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(iconBack);
     }
 
     private void Anhxa() {
         Toolbar();
-        rcHistory=(RecyclerView) findViewById(R.id.rcHistory);
+        rcHistory = (RecyclerView) findViewById(R.id.rcHistory);
         rcHistory.setHasFixedSize(false);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rcHistory.setLayoutManager(layoutManager);
-        DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,layoutManager.getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
         rcHistory.addItemDecoration(dividerItemDecoration);
-        adapter=new HistoryAdapter(this,bookings);
+        adapter = new HistoryAdapter(this, bookings);
         rcHistory.setAdapter(adapter);
         getDataBase();
     }
