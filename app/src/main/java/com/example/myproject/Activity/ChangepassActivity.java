@@ -44,16 +44,7 @@ public class ChangepassActivity extends AppCompatActivity {
         });
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     private void ReadSession() {
         SharedPreferences sharedPreferences = getSharedPreferences("dataLogin", MODE_PRIVATE);
@@ -88,6 +79,17 @@ public class ChangepassActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void Toolbar() {
