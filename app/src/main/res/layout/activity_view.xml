@@ -11,6 +11,9 @@
     android:background="#030819">
 
     <GridView
+        android:layout_marginStart="20dp"
+        android:verticalSpacing="-14dp"
+        android:horizontalSpacing="-30dp"
         android:textColor="#FFFFFF"
         android:id="@+id/girdviewChair"
         android:layout_width="0dp"

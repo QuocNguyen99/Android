@@ -44,7 +44,7 @@ public class ForgetActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String emailAddress = String.valueOf(edtMail.getText());
 
-        if()
+
         auth.sendPasswordResetEmail(emailAddress)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
